@@ -172,6 +172,7 @@ end
 function __solvebp_call(prob::QuadratureProblem,::HCubatureJL,sensealg,lb,ub,p,args...;
                           reltol = 1e-8, abstol = 1e-8,
                           maxiters = typemax(Int),
+                          norm = norm, initdiv =1,
                           kwargs...)
     p = p
 
@@ -186,11 +187,11 @@ function __solvebp_call(prob::QuadratureProblem,::HCubatureJL,sensealg,lb,ub,p,a
     if lb isa Number
         val,err = hquadrature(f, lb, ub;
                               rtol=reltol, atol=abstol,
-                              maxevals=maxiters, kwargs...)
+                              maxevals=maxiters, norm=norm, initdiv=initdiv)
     else
         val,err = hcubature(f, lb, ub;
                             rtol=reltol, atol=abstol,
-                            maxevals=maxiters, kwargs...)
+                            maxevals=maxiters, norm=norm, initdiv=initdiv)
     end
     DiffEqBase.build_solution(prob,HCubatureJL(),val,err,retcode = :Success)
 end
